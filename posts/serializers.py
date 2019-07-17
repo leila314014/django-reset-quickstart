@@ -8,8 +8,8 @@ from .models import Post
 class PostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
-        fields = '__all__'
-        read_only_fields = ['creator', 'create_at']
+        exclude = ['creator']  # 排除這個欄位
+        read_only_fields = ['create_at']
 
 
 class PostCommentSerializer(serializers.ModelSerializer):
@@ -17,5 +17,5 @@ class PostCommentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Post
-        fields = '__all__'
-        read_only_fields = ['creator', 'create_at']
+        exclude = ['creator']
+        read_only_fields = ['create_at']

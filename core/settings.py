@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'django_extensions',
     'django_filters',
+    'rest_framework.authtoken',
 
     'posts',
     'categories',

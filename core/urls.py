@@ -17,17 +17,21 @@ from django.contrib import admin
 from django.urls import path, include
 
 from rest_framework.routers import DefaultRouter
+# from rest_framework.authtoken.views import ObtainAuthToken
 
 from categories.views import CategoryViewSet
 from comments.views import CommentViewSet
 from posts.views import PostViewSet
+from users.views import UserViesSet
 
 router = DefaultRouter(False)
 router.register('categories', CategoryViewSet)
 router.register('comments', CommentViewSet)
 router.register('posts', PostViewSet)
+router.register('users', UserViesSet)
 
 urlpatterns = [
     path('', include(router.urls)),
+    # path('token/', ObtainAuthToken.as_view()),
     path('admin/', admin.site.urls),
 ]

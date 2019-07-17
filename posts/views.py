@@ -1,7 +1,11 @@
 from rest_framework.viewsets import ModelViewSet
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
+from rest_framework.decorators import action
 
 from core.permissions import IsCreatorOrReadOnly
+
+from comments.models import Comment
+from comments.serializers import CommentSerializer
 
 from .models import Post
 from .serializers import PostSerializer, PostCommentSerializer
@@ -15,11 +19,40 @@ class PostViewSet(ModelViewSet):
         IsCreatorOrReadOnly
     ]
 
-    def get_serializer_class(self):
-        if self.action == 'retrieve':
-            return PostCommentSerializer
+    def get_queryset(self):
+        if self.action == 'comments':
+            pk = self.kwargs.get('pk')
+            return Comment.objects.filter(post_id=pk)
 
-        return super().get_serializer_class()
+        if self.action == 'my':
+            return Post.objects.filter(creator=self.request.user)
+
+        return super().get_queryset()
+
+    def get_serializer_class(self):
+        # if self.action == 'retrieve':
+        #     return PostCommentSerializer
+        # if self.action == 'comments':
+        #     return CommentSerializer
+        # return super().get_serializer_class()
+        default = super().get_serializer_class()
+        return {
+            'retrieve': PostCommentSerializer,
+            'comments': CommentSerializer
+        }.get(self.action, default)
 
     def perform_create(self, serializer):
         serializer.save(creator=self.request.user)
+
+    # 不希望url有<pk>就用False
+    @action(['GET'], True)
+    def comments(self, request, pk):
+        # queryset = self.get_queryset()
+        # serializer = self.get_serializer(queryset, many=True)
+        # return Response(serializer.data)
+        return self.list(request)
+
+    @action(['GET'], False, permission_classes=[IsAuthenticated])
+    def my(self, request):
+        return self.list(request)
+
