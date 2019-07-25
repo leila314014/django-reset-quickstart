@@ -17,7 +17,13 @@ from django.contrib import admin
 from django.urls import path, include
 
 from rest_framework.routers import DefaultRouter
+from rest_framework.documentation import include_docs_urls
+from rest_framework.authentication import SessionAuthentication
+from rest_framework.permissions import IsAdminUser
 # from rest_framework.authtoken.views import ObtainAuthToken
+
+from django.conf.urls.static import static
+from core.settings import DEBUG, MEDIA_ROOT, MEDIA_URL
 
 from categories.views import CategoryViewSet
 from comments.views import CommentViewSet
@@ -34,4 +40,13 @@ urlpatterns = [
     path('', include(router.urls)),
     # path('token/', ObtainAuthToken.as_view()),
     path('admin/', admin.site.urls),
+    path('docs/', include_docs_urls(
+        title='Django Rest Quick Start Docs',
+        authentication_classes=[SessionAuthentication],
+        permission_classes=[IsAdminUser],
+    )),
 ]
+
+# 顯示superuser_image
+if DEBUG:
+    urlpatterns += static(MEDIA_URL, document_root=MEDIA_ROOT)

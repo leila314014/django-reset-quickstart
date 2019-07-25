@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 
 import environ
 
+
 env = environ.Env()
 env.read_env()
 
@@ -45,6 +46,7 @@ INSTALLED_APPS = [
     'django_extensions',
     'django_filters',
     'rest_framework.authtoken',
+    'django_cleanup',
 
     'posts',
     'categories',
@@ -129,7 +131,17 @@ STATIC_URL = '/static/'
 AUTH_USER_MODEL = 'users.User'
 
 REST_FRAMEWORK = {
+    # 'DEFAULT_RENDERER_CLASSES': [
+    #     'djangorestframework_camel_case.render.CamelCaseJSONRenderer',
+    # ],
+    # 'DEFAULT_PARSER_CLASSES': [
+    #     # If you use MultiPartFormParser or FormParser, we also have a camel case version
+    #     'djangorestframework_camel_case.parser.CamelCaseFormParser',
+    #     'djangorestframework_camel_case.parser.CamelCaseMultiPartParser',
+    #     'djangorestframework_camel_case.parser.CamelCaseJSONParser',
+    # ],
     'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
         'rest_framework.authentication.BasicAuthentication',
     ],
     'DEFAULT_PERMISSION_CLASSES': [
@@ -138,5 +150,17 @@ REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': [
         'django_filters.rest_framework.DjangoFilterBackend',
     ],
+    'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema',
+    # 'JSON_UNDERSCOREIZE': {
+    #     'no_underscore_before_number': True,
+    # },
 }
 
+EMAIL_URL = env.email_url()
+
+vars().update(EMAIL_URL)
+
+
+MEDIA_URL = '/media/'
+
+MEDIA_ROOT = root('media')

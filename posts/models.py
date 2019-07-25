@@ -4,6 +4,7 @@ from users.models import User
 
 
 class Post(models.Model):
+    # 按讚、回文、標籤
     title = models.CharField(max_length=255)
     content = models.TextField(max_length=3000)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
